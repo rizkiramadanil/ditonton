@@ -12,6 +12,12 @@ dependencies:
     sdk: flutter
   core:
     path: ../core
+  movie:
+    path: ../movie
+  series:
+    path: ../series
+  search:
+    path: ../search
   cupertino_icons: ^1.0.2
   http: ^0.13.3
   dartz: ^0.10.0-nullsafety.2

@@ -1,10 +1,10 @@
-import 'package:core/data/models/movie_table.dart';
-import 'package:core/data/models/series_table.dart';
 import 'package:core/domain/entities/genre.dart';
-import 'package:core/domain/entities/movie.dart';
-import 'package:core/domain/entities/movie_detail.dart';
-import 'package:core/domain/entities/series.dart';
-import 'package:core/domain/entities/series_detail.dart';
+import 'package:movie/data/models/movie_table.dart';
+import 'package:movie/domain/entities/movie.dart';
+import 'package:movie/domain/entities/movie_detail.dart';
+import 'package:series/data/models/series_table.dart';
+import 'package:series/domain/entities/series.dart';
+import 'package:series/domain/entities/series_detail.dart';
 
 final testMovie = Movie(
   adult: false,

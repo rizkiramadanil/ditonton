@@ -1,16 +1,16 @@
-import 'package:core/data/datasources/db/movie_database_helper.dart';
-import 'package:core/data/datasources/db/series_database_helper.dart';
-import 'package:core/data/datasources/movie_local_data_source.dart';
 import 'package:core/data/datasources/remote_data_source.dart';
-import 'package:core/data/datasources/series_local_data_source.dart';
-import 'package:core/domain/repositories/movie_repository.dart';
-import 'package:core/domain/repositories/series_repository.dart';
 import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;
+import 'package:movie/data/datasources/db/movie_database_helper.dart';
+import 'package:movie/data/datasources/movie_local_data_source.dart';
+import 'package:movie/domain/repositories/movie_repository.dart';
+import 'package:series/data/datasources/db/series_database_helper.dart';
+import 'package:series/data/datasources/series_local_data_source.dart';
+import 'package:series/domain/repositories/series_repository.dart';
 
 @GenerateMocks([
-  MovieRepository,
   RemoteDataSource,
+  MovieRepository,
   MovieLocalDataSource,
   MovieDatabaseHelper,
   SeriesRepository,

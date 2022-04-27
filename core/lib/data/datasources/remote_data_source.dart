@@ -1,14 +1,13 @@
 import 'dart:convert';
 
+import 'package:core/utils/exception.dart';
 import 'package:http/http.dart' as http;
-
-import '../../utils/exception.dart';
-import '../models/movie_detail_model.dart';
-import '../models/movie_model.dart';
-import '../models/movie_response.dart';
-import '../models/series_detail_model.dart';
-import '../models/series_model.dart';
-import '../models/series_response.dart';
+import 'package:movie/data/models/movie_detail_model.dart';
+import 'package:movie/data/models/movie_model.dart';
+import 'package:movie/data/models/movie_response.dart';
+import 'package:series/data/models/series_detail_model.dart';
+import 'package:series/data/models/series_model.dart';
+import 'package:series/data/models/series_response.dart';
 
 abstract class RemoteDataSource {
   Future<List<MovieModel>> getNowPlayingMovies();

@@ -4,12 +4,12 @@
 
 import 'dart:async' as _i5;
 
-import 'package:core/domain/entities/series.dart' as _i7;
-import 'package:core/domain/repositories/series_repository.dart' as _i2;
 import 'package:core/utils/failure.dart' as _i6;
 import 'package:dartz/dartz.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:search/domain/usecases/search_series.dart' as _i4;
+import 'package:series/domain/entities/series.dart' as _i7;
+import 'package:series/domain/repositories/series_repository.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

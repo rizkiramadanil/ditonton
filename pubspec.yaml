@@ -11,6 +11,10 @@ dependencies:
     sdk: flutter
   core:
     path: core
+  movie:
+    path: movie
+  series:
+    path: series
   about:
     path: about
   search:

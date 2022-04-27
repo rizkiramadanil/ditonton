@@ -1,0 +1,31 @@
+{
+  "adult": false,
+  "backdrop_path": "/path.jpg",
+  "episode_run_time": [1],
+  "genres": [
+    {
+      "id": 1,
+      "name": "Action & Adventure"
+    }
+  ],
+  "homepage": "https://google.com",
+  "id": 1,
+  "in_production": true,
+  "name": "Name",
+  "next_episode_to_air": "Next Episode To Air",
+  "number_of_episodes": 1,
+  "number_of_seasons": 1,
+  "origin_country": [
+    "Origin Country"
+  ],
+  "original_language": "Original Language",
+  "original_name": "Original Name",
+  "overview": "Overview",
+  "popularity": 1,
+  "poster_path": "/path.jpg",
+  "status": "Status",
+  "tagline": "Tagline",
+  "type": "Type",
+  "vote_average": 1.0,
+  "vote_count": 1
+}

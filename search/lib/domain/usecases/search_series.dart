@@ -1,7 +1,7 @@
-import 'package:core/domain/entities/series.dart';
-import 'package:core/domain/repositories/series_repository.dart';
 import 'package:core/utils/failure.dart';
 import 'package:dartz/dartz.dart';
+import 'package:series/domain/entities/series.dart';
+import 'package:series/domain/repositories/series_repository.dart';
 
 class SearchSeries {
   final SeriesRepository repository;
