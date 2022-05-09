@@ -8,14 +8,15 @@ part 'search_series_event.dart';
 part 'search_series_state.dart';
 
 class SearchSeriesBloc extends Bloc<SearchSeriesEvent, SearchSeriesState> {
-  final SearchSeries _searchSeries;
+  final SearchSeries searchSeries;
 
-  SearchSeriesBloc(this._searchSeries) : super(SearchEmpty()) {
+  SearchSeriesBloc(
+      this.searchSeries
+  ) : super(SearchEmpty()) {
     on<OnQueryChanged>((event, emit) async {
       final query = event.query;
-
       emit(SearchLoading());
-      final result = await _searchSeries.execute(query);
+      final result = await searchSeries.execute(query);
 
       result.fold(
             (failure) {

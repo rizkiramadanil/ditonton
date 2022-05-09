@@ -2,22 +2,25 @@ import 'package:about/about.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/styles/text_styles.dart';
 import 'package:core/utils/constants.dart';
-import 'package:core/utils/state_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie/presentation/pages/home_movie_page.dart';
 import 'package:movie/presentation/pages/watchlist_movies_page.dart';
-import 'package:provider/provider.dart';
 import 'package:search/search.dart';
 import 'package:series/domain/entities/series.dart';
+import 'package:series/presentation/bloc/on_the_air_series/on_the_air_series_bloc.dart';
+import 'package:series/presentation/bloc/popular_series/popular_series_bloc.dart';
+import 'package:series/presentation/bloc/top_rated_series/top_rated_series_bloc.dart';
 import 'package:series/presentation/pages/on_the_air_series_page.dart';
 import 'package:series/presentation/pages/popular_series_page.dart';
 import 'package:series/presentation/pages/series_detail_page.dart';
 import 'package:series/presentation/pages/top_rated_series_page.dart';
 import 'package:series/presentation/pages/watchlist_series_page.dart';
-import 'package:series/presentation/provider/series_list_notifier.dart';
 
 class HomeSeriesPage extends StatefulWidget {
-  static const ROUTE_NAME = '/home-series';
+  static const routeName = '/home-series';
+
+  const HomeSeriesPage({Key? key}) : super(key: key);
 
   @override
   _HomeSeriesPageState createState() => _HomeSeriesPageState();
@@ -27,11 +30,11 @@ class _HomeSeriesPageState extends State<HomeSeriesPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-            () => Provider.of<SeriesListNotifier>(context, listen: false)
-          ..fetchOnTheAirSeries()
-          ..fetchPopularSeries()
-          ..fetchTopRatedSeries());
+    Future.microtask(() {
+      context.read<OnTheAirSeriesBloc>().add(GetOnTheAirSeriesEvent());
+      context.read<PopularSeriesBloc>().add(GetPopularSeriesEvent());
+      context.read<TopRatedSeriesBloc>().add(GetTopRatedSeriesEvent());
+    });
   }
 
   @override
@@ -40,7 +43,7 @@ class _HomeSeriesPageState extends State<HomeSeriesPage> {
       drawer: Drawer(
         child: Column(
           children: [
-            UserAccountsDrawerHeader(
+            const UserAccountsDrawerHeader(
               currentAccountPicture: CircleAvatar(
                 backgroundImage: AssetImage('assets/circle-g.png'),
               ),
@@ -48,51 +51,51 @@ class _HomeSeriesPageState extends State<HomeSeriesPage> {
               accountEmail: Text('ditonton@dicoding.com'),
             ),
             ListTile(
-              leading: Icon(Icons.movie),
-              title: Text('Movies'),
+              leading: const Icon(Icons.movie),
+              title: const Text('Movies'),
               onTap: () {
-                Navigator.pushNamed(context, HomeMoviePage.ROUTE_NAME);
+                Navigator.pushNamed(context, HomeMoviePage.routeName);
               },
             ),
             ListTile(
-              leading: Icon(Icons.tv),
-              title: Text('Series'),
+              leading: const Icon(Icons.tv),
+              title: const Text('Series'),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: Icon(Icons.save_alt),
-              title: Text('Watchlist Movie'),
+              leading: const Icon(Icons.save_alt),
+              title: const Text('Watchlist Movie'),
               onTap: () {
-                Navigator.pushNamed(context, WatchlistMoviesPage.ROUTE_NAME);
+                Navigator.pushNamed(context, WatchlistMoviesPage.routeName);
               },
             ),
             ListTile(
-              leading: Icon(Icons.save_alt),
-              title: Text('Watchlist Series'),
+              leading: const Icon(Icons.save_alt),
+              title: const Text('Watchlist Series'),
               onTap: () {
-                Navigator.pushNamed(context, WatchlistSeriesPage.ROUTE_NAME);
+                Navigator.pushNamed(context, WatchlistSeriesPage.routeName);
               },
             ),
             ListTile(
               onTap: () {
-                Navigator.pushNamed(context, AboutPage.ROUTE_NAME);
+                Navigator.pushNamed(context, AboutPage.routeName);
               },
-              leading: Icon(Icons.info_outline),
-              title: Text('About'),
+              leading: const Icon(Icons.info_outline),
+              title: const Text('About'),
             ),
           ],
         ),
       ),
       appBar: AppBar(
-        title: Text('Ditonton Series'),
+        title: const Text('Ditonton'),
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, SearchSeriesPage.ROUTE_NAME);
+              Navigator.pushNamed(context, SearchSeriesPage.routeName);
             },
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
           )
         ],
       ),
@@ -103,56 +106,65 @@ class _HomeSeriesPageState extends State<HomeSeriesPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildSubHeading(
-                title: 'Now PLaying',
+                title: 'Now PLaying Series',
                 onTap: () =>
-                    Navigator.pushNamed(context, OnTheAirSeriesPage.ROUTE_NAME),
+                    Navigator.pushNamed(context, OnTheAirSeriesPage.routeName),
               ),
-              Consumer<SeriesListNotifier>(builder: (context, data, child) {
-                final state = data.onTheAirState;
-                if (state == RequestState.Loading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state == RequestState.Loaded) {
-                  return SeriesList(data.onTheAirSeries);
-                } else {
-                  return Text('Failed');
-                }
-              }),
+              BlocBuilder<OnTheAirSeriesBloc, OnTheAirSeriesState>(
+                builder: (context, state) {
+                  if (state is OnTheAirSeriesLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is OnTheAirSeriesLoaded) {
+                    return SeriesList(state.result);
+                  } else if (state is OnTheAirSeriesError) {
+                    return Text(state.message);
+                  } else {
+                    return const Text('Failed');
+                  }
+                },
+              ),
               _buildSubHeading(
-                title: 'Popular',
+                title: 'Popular Series',
                 onTap: () =>
-                    Navigator.pushNamed(context, PopularSeriesPage.ROUTE_NAME),
+                  Navigator.pushNamed(context, PopularSeriesPage.routeName),
               ),
-              Consumer<SeriesListNotifier>(builder: (context, data, child) {
-                final state = data.popularSeriesState;
-                if (state == RequestState.Loading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state == RequestState.Loaded) {
-                  return SeriesList(data.popularSeries);
-                } else {
-                  return Text('Failed');
-                }
-              }),
+              BlocBuilder<PopularSeriesBloc, PopularSeriesState>(
+                builder: (context, state) {
+                  if (state is PopularSeriesLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is PopularSeriesLoaded) {
+                    return SeriesList(state.result);
+                  } else if (state is PopularSeriesError) {
+                    return Text(state.message);
+                  } else {
+                    return const Text('Failed');
+                  }
+                },
+              ),
               _buildSubHeading(
-                title: 'Top Rated',
+                title: 'Top Rated Series',
                 onTap: () =>
-                    Navigator.pushNamed(context, TopRatedSeriesPage.ROUTE_NAME),
+                  Navigator.pushNamed(context, TopRatedSeriesPage.routeName),
               ),
-              Consumer<SeriesListNotifier>(builder: (context, data, child) {
-                final state = data.topRatedSeriesState;
-                if (state == RequestState.Loading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state == RequestState.Loaded) {
-                  return SeriesList(data.topRatedSeries);
-                } else {
-                  return Text('Failed');
-                }
-              }),
+              BlocBuilder<TopRatedSeriesBloc, TopRatedSeriesState>(
+                builder: (context, state) {
+                  if (state is TopRatedSeriesLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is TopRatedSeriesLoaded) {
+                    return SeriesList(state.result);
+                  } else if (state is TopRatedSeriesError) {
+                    return Text(state.message);
+                  } else {
+                    return const Text('Failed');
+                  }
+                },
+              ),
             ],
           ),
         ),
@@ -173,7 +185,7 @@ class _HomeSeriesPageState extends State<HomeSeriesPage> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
-              children: [Text('See More'), Icon(Icons.arrow_forward_ios)],
+              children: const [Text('See More'), Icon(Icons.arrow_forward_ios)],
             ),
           ),
         ),
@@ -185,11 +197,11 @@ class _HomeSeriesPageState extends State<HomeSeriesPage> {
 class SeriesList extends StatelessWidget {
   final List<Series> series;
 
-  SeriesList(this.series);
+  const SeriesList(this.series);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -201,18 +213,18 @@ class SeriesList extends StatelessWidget {
               onTap: () {
                 Navigator.pushNamed(
                   context,
-                  SeriesDetailPage.ROUTE_NAME,
+                  SeriesDetailPage.routeName,
                   arguments: seriesTV.id,
                 );
               },
               child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
+                borderRadius: const BorderRadius.all(Radius.circular(16)),
                 child: CachedNetworkImage(
                   imageUrl: '$BASE_IMAGE_URL${seriesTV.posterPath}',
-                  placeholder: (context, url) => Center(
+                  placeholder: (context, url) => const Center(
                     child: CircularProgressIndicator(),
                   ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
             ),

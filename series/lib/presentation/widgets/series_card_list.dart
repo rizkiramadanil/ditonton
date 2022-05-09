@@ -18,7 +18,7 @@ class SeriesCard extends StatelessWidget {
         onTap: () {
           Navigator.pushNamed(
             context,
-            SeriesDetailPage.ROUTE_NAME,
+            SeriesDetailPage.routeName,
             arguments: series.id,
           );
         },

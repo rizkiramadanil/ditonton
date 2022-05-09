@@ -1,11 +1,12 @@
-import 'package:core/utils/state_enum.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:series/presentation/provider/on_the_air_series_notifier.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:series/presentation/bloc/on_the_air_series/on_the_air_series_bloc.dart';
 import 'package:series/presentation/widgets/series_card_list.dart';
 
 class OnTheAirSeriesPage extends StatefulWidget {
-  static const ROUTE_NAME = '/on-the-air-series';
+  static const routeName = '/on-the-air-series';
+
+  const OnTheAirSeriesPage({Key? key}) : super(key: key);
 
   @override
   State<OnTheAirSeriesPage> createState() => _OnTheAirSeriesPageState();
@@ -15,43 +16,54 @@ class _OnTheAirSeriesPageState extends State<OnTheAirSeriesPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        Provider.of<OnTheAirSeriesNotifier>(context, listen: false)
-            .fetchOnTheAirSeries());
+    Future.microtask(() {
+      context.read<OnTheAirSeriesBloc>().add(GetOnTheAirSeriesEvent());
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Now Playing Series'),
+        title: const Text('Now Playing Series'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<OnTheAirSeriesNotifier>(
-          builder: (context, data, child) {
-            if (data.state == RequestState.Loading) {
-              return Center(
+        child: BlocBuilder<OnTheAirSeriesBloc, OnTheAirSeriesState>(
+          builder: (context, state) {
+            if (state is OnTheAirSeriesLoading) {
+              return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.state == RequestState.Loaded) {
+            } else if (state is OnTheAirSeriesLoaded) {
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  final series = data.series[index];
+                  final series = state.result[index];
                   return SeriesCard(series);
                 },
-                itemCount: data.series.length,
+                itemCount: state.result.length,
               );
-            } else {
+            } else if (state is OnTheAirSeriesEmpty) {
               return Center(
-                key: Key('error_message'),
                 child: Text(
-                  data.message,
+                  state.message,
                   style: const TextStyle(
                     fontSize: 15,
                   ),
                 ),
               );
+            } else if (state is OnTheAirSeriesError) {
+              return Center(
+                key: const Key('error_message'),
+                child: Text(
+                  state.message,
+                  style: const TextStyle(
+                    fontSize: 15,
+                  ),
+                ),
+              );
+            } else {
+              return Container();
             }
           },
         ),

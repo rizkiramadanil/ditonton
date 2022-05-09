@@ -1,12 +1,13 @@
-import 'package:core/utils/state_enum.dart';
 import 'package:core/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:series/presentation/provider/watchlist_series_notifier.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:series/presentation/bloc/watchlist_series/watchlist_series_bloc.dart';
 import 'package:series/presentation/widgets/series_card_list.dart';
 
 class WatchlistSeriesPage extends StatefulWidget {
-  static const ROUTE_NAME = '/watchlist-series';
+  static const routeName = '/watchlist-series';
+
+  const WatchlistSeriesPage({Key? key}) : super(key: key);
 
   @override
   _WatchlistSeriesPageState createState() => _WatchlistSeriesPageState();
@@ -16,9 +17,9 @@ class _WatchlistSeriesPageState extends State<WatchlistSeriesPage> with RouteAwa
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        Provider.of<WatchlistSeriesNotifier>(context, listen: false)
-            .fetchWatchlistSeries());
+    Future.microtask(() {
+      context.read<WatchlistSeriesBloc>().add(GetListEvent());
+    });
   }
 
   @override
@@ -27,42 +28,54 @@ class _WatchlistSeriesPageState extends State<WatchlistSeriesPage> with RouteAwa
     routeObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
+  @override
   void didPopNext() {
-    Provider.of<WatchlistSeriesNotifier>(context, listen: false)
-        .fetchWatchlistSeries();
+    context.read<WatchlistSeriesBloc>().add(GetListEvent());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Watchlist Series'),
+        title: const Text('Watchlist Series'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<WatchlistSeriesNotifier>(
-          builder: (context, data, child) {
-            if (data.watchlistState == RequestState.Loading) {
-              return Center(
+        child: BlocBuilder<WatchlistSeriesBloc, WatchlistSeriesState>(
+          builder: (context, state) {
+            if (state is WatchlistSeriesLoading) {
+              return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.watchlistState == RequestState.Loaded) {
+            } else if (state is WatchlistSeriesLoaded) {
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  final series = data.watchlistSeries[index];
+                  final series = state.result[index];
                   return SeriesCard(series);
                 },
-                itemCount: data.watchlistSeries.length,
+                itemCount: state.result.length,
               );
-            } else {
+            } else if (state is WatchlistSeriesEmpty) {
               return Center(
-                key: Key('error_message'),
                 child: Text(
-                  data.message,
+                  state.message,
                   style: const TextStyle(
                     fontSize: 15,
-                  ),),
+                  ),
+                ),
               );
+            } else if (state is WatchlistSeriesError) {
+              return Center(
+                key: const Key('error_message'),
+                child: Text(
+                  state.message,
+                  style: const TextStyle(
+                    fontSize: 15,
+                  ),
+                ),
+              );
+            } else {
+              return Container();
             }
           },
         ),

@@ -6,13 +6,15 @@ import 'package:movie/presentation/widgets/movie_card_list.dart';
 import '../bloc/search_movies_bloc.dart';
 
 class SearchMoviesPage extends StatelessWidget {
-  static const ROUTE_NAME = '/search-movie';
+  static const routeName = '/search-movie';
+
+  const SearchMoviesPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search'),
+        title: const Text('Search'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -23,14 +25,14 @@ class SearchMoviesPage extends StatelessWidget {
               onChanged: (query) {
                 context.read<SearchMoviesBloc>().add(OnQueryChanged(query));
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Search title',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(),
               ),
               textInputAction: TextInputAction.search,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               'Search Result',
               style: kHeading6,
@@ -38,7 +40,7 @@ class SearchMoviesPage extends StatelessWidget {
             BlocBuilder<SearchMoviesBloc, SearchMoviesState>(
               builder: (context, state) {
                 if (state is SearchLoading) {
-                  return Expanded(
+                  return const Expanded(
                     child: Center(
                       child: CircularProgressIndicator(),
                     ),

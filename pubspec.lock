@@ -500,7 +500,7 @@ packages:
     source: hosted
     version: "5.1.0"
   mocktail:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: mocktail
       url: "https://pub.dartlang.org"
@@ -743,7 +743,7 @@ packages:
     source: hosted
     version: "1.8.1"
   sqflite:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: sqflite
       url: "https://pub.dartlang.org"
@@ -757,7 +757,7 @@ packages:
     source: hosted
     version: "2.2.0"
   sqflite_sqlcipher:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: sqflite_sqlcipher
       url: "https://pub.dartlang.org"

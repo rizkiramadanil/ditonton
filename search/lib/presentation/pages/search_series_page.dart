@@ -6,13 +6,15 @@ import 'package:series/presentation/widgets/series_card_list.dart';
 import '../bloc/search_series_bloc.dart';
 
 class SearchSeriesPage extends StatelessWidget {
-  static const ROUTE_NAME = '/search-series';
+  static const routeName = '/search-series';
+
+  const SearchSeriesPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search'),
+        title: const Text('Search'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -23,14 +25,14 @@ class SearchSeriesPage extends StatelessWidget {
               onChanged: (query) {
                 context.read<SearchSeriesBloc>().add(OnQueryChanged(query));
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Search title',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(),
               ),
               textInputAction: TextInputAction.search,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               'Search Result',
               style: kHeading6,
@@ -38,7 +40,7 @@ class SearchSeriesPage extends StatelessWidget {
             BlocBuilder<SearchSeriesBloc, SearchSeriesState>(
               builder: (context, state) {
                 if (state is SearchLoading) {
-                  return Expanded(
+                  return const Expanded(
                     child: Center(
                       child: CircularProgressIndicator(),
                     ),

@@ -2,19 +2,20 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/domain/entities/genre.dart';
 import 'package:core/styles/colors.dart';
 import 'package:core/styles/text_styles.dart';
-import 'package:core/utils/state_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:provider/provider.dart';
 import 'package:series/domain/entities/series.dart';
 import 'package:series/domain/entities/series_detail.dart';
-import 'package:series/presentation/provider/series_detail_notifier.dart';
+import 'package:series/presentation/bloc/series_detail/series_detail_bloc.dart';
+import 'package:series/presentation/bloc/series_recommendation/series_recommendation_bloc.dart';
+import 'package:series/presentation/bloc/watchlist_series/watchlist_series_bloc.dart';
 
 class SeriesDetailPage extends StatefulWidget {
-  static const ROUTE_NAME = '/detail-series';
+  static const routeName = '/detail-series';
 
   final int id;
-  SeriesDetailPage({required this.id});
+  const SeriesDetailPage({required this.id});
 
   @override
   _SeriesDetailPageState createState() => _SeriesDetailPageState();
@@ -25,42 +26,51 @@ class _SeriesDetailPageState extends State<SeriesDetailPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      Provider.of<SeriesDetailNotifier>(context, listen: false)
-          .fetchSeriesDetail(widget.id);
-      Provider.of<SeriesDetailNotifier>(context, listen: false)
-          .loadWatchlistStatus(widget.id);
+      context.read<SeriesDetailBloc>().add(GetSeriesDetailEvent(widget.id));
+      context.read<SeriesRecommendationBloc>().add(GetSeriesRecommendationEvent(widget.id));
+      context.read<WatchlistSeriesBloc>().add(GetStatusSeriesEvent(widget.id));
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    SeriesRecommendationState seriesRecommendationState = context.watch<SeriesRecommendationBloc>().state;
     return Scaffold(
-      body: Consumer<SeriesDetailNotifier>(
-        builder: (context, provider, child) {
-          if (provider.seriesState == RequestState.Loading) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (provider.seriesState == RequestState.Loaded) {
-            final series = provider.series;
-            return SafeArea(
-              child: DetailContent(
-                series,
-                provider.seriesRecommendations,
-                provider.isAddedToWatchlist,
-              ),
-            );
-          } else {
-            return Center(
-              child: Text(
-                provider.message,
-                style: const TextStyle(
-                  fontSize: 15,
-                ),
-              ),
-            );
+      body: BlocListener<WatchlistSeriesBloc, WatchlistSeriesState>(
+        listener: (_, state) {
+          if (state is WatchlistSeriesSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message),));
+            context.read<WatchlistSeriesBloc>().add(GetStatusSeriesEvent(widget.id));
           }
         },
+        child: BlocBuilder<SeriesDetailBloc, SeriesDetailState>(
+          builder: (context, state) {
+            if (state is SeriesDetailLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is SeriesDetailLoaded) {
+              final series = state.result;
+              bool isAddedToWatchListSeries = (context.watch<WatchlistSeriesBloc>().state is WatchlistSeriesStatusLoaded) ? (context.read<WatchlistSeriesBloc>().state as WatchlistSeriesStatusLoaded).result : false;
+              return SafeArea(
+                child: DetailContent(
+                  series,
+                  seriesRecommendationState is SeriesRecommendationLoaded ? seriesRecommendationState.result : List.empty(),
+                  isAddedToWatchListSeries,
+                ),
+              );
+            } else {
+              return const Center(
+                child: Text(
+                  'No Data',
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -71,7 +81,7 @@ class DetailContent extends StatelessWidget {
   final List<Series> recommendations;
   final bool isAddedWatchlist;
 
-  DetailContent(this.series, this.recommendations, this.isAddedWatchlist);
+  const DetailContent(this.series, this.recommendations, this.isAddedWatchlist);
 
   @override
   Widget build(BuildContext context) {
@@ -81,17 +91,17 @@ class DetailContent extends StatelessWidget {
         CachedNetworkImage(
           imageUrl: 'https://image.tmdb.org/t/p/w500${series.posterPath}',
           width: screenWidth,
-          placeholder: (context, url) => Center(
+          placeholder: (context, url) => const Center(
             child: CircularProgressIndicator(),
           ),
-          errorWidget: (context, url, error) => Icon(Icons.error),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
         Container(
           margin: const EdgeInsets.only(top: 48 + 8),
           child: DraggableScrollableSheet(
             builder: (context, scrollController) {
               return Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: kRichBlack,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 ),
@@ -116,47 +126,18 @@ class DetailContent extends StatelessWidget {
                             ElevatedButton(
                               onPressed: () async {
                                 if (!isAddedWatchlist) {
-                                  await Provider.of<SeriesDetailNotifier>(
-                                      context,
-                                      listen: false)
-                                      .addWatchlist(series);
+                                  BlocProvider.of<WatchlistSeriesBloc>(context).add(AddItemSeriesEvent(series));
                                 } else {
-                                  await Provider.of<SeriesDetailNotifier>(
-                                      context,
-                                      listen: false)
-                                      .removeFromWatchlist(series);
-                                }
-
-                                final message =
-                                    Provider.of<SeriesDetailNotifier>(context,
-                                        listen: false)
-                                        .watchlistMessage;
-
-                                if (message ==
-                                    SeriesDetailNotifier
-                                        .watchlistAddSuccessMessage ||
-                                    message ==
-                                        SeriesDetailNotifier
-                                            .watchlistRemoveSuccessMessage) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(message)));
-                                } else {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          content: Text(message),
-                                        );
-                                      });
+                                  BlocProvider.of<WatchlistSeriesBloc>(context).add(RemoveItemSeriesEvent(series));
                                 }
                               },
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   isAddedWatchlist
-                                      ? Icon(Icons.check)
-                                      : Icon(Icons.add),
-                                  Text('Watchlist'),
+                                      ? const Icon(Icons.check)
+                                      : const Icon(Icons.add),
+                                  const Text('Watchlist'),
                                 ],
                               ),
                             ),
@@ -174,7 +155,7 @@ class DetailContent extends StatelessWidget {
                                 RatingBarIndicator(
                                   rating: series.voteAverage / 2,
                                   itemCount: 5,
-                                  itemBuilder: (context, index) => Icon(
+                                  itemBuilder: (context, index) => const Icon(
                                     Icons.star,
                                     color: kMikadoYellow,
                                   ),
@@ -183,7 +164,7 @@ class DetailContent extends StatelessWidget {
                                 Text('${series.voteAverage}')
                               ],
                             ),
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
                             Text(
                               'Overview',
                               style: kHeading6,
@@ -191,24 +172,19 @@ class DetailContent extends StatelessWidget {
                             Text(
                               series.overview,
                             ),
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
                             Text(
                               'Recommendations',
                               style: kHeading6,
                             ),
-                            Consumer<SeriesDetailNotifier>(
-                              builder: (context, data, child) {
-                                if (data.recommendationState ==
-                                    RequestState.Loading) {
-                                  return Center(
+                            BlocBuilder<SeriesRecommendationBloc, SeriesRecommendationState>(
+                              builder: (context, state) {
+                                if (state is SeriesRecommendationLoading) {
+                                  return const Center(
                                     child: CircularProgressIndicator(),
                                   );
-                                } else if (data.recommendationState ==
-                                    RequestState.Error) {
-                                  return Text(data.message);
-                                } else if (data.recommendationState ==
-                                    RequestState.Loaded) {
-                                  return Container(
+                                } else if (state is SeriesRecommendationLoaded) {
+                                  return SizedBox(
                                     height: 150,
                                     child: ListView.builder(
                                       scrollDirection: Axis.horizontal,
@@ -220,25 +196,25 @@ class DetailContent extends StatelessWidget {
                                             onTap: () {
                                               Navigator.pushReplacementNamed(
                                                 context,
-                                                SeriesDetailPage.ROUTE_NAME,
+                                                SeriesDetailPage.routeName,
                                                 arguments: series.id,
                                               );
                                             },
                                             child: ClipRRect(
-                                              borderRadius: BorderRadius.all(
+                                              borderRadius: const BorderRadius.all(
                                                 Radius.circular(8),
                                               ),
                                               child: CachedNetworkImage(
                                                 imageUrl:
                                                 'https://image.tmdb.org/t/p/w500${series.posterPath}',
                                                 placeholder: (context, url) =>
-                                                    Center(
+                                                    const Center(
                                                       child:
                                                       CircularProgressIndicator(),
                                                     ),
                                                 errorWidget:
                                                     (context, url, error) =>
-                                                    Icon(Icons.error),
+                                                    const Icon(Icons.error),
                                               ),
                                             ),
                                           ),
@@ -246,6 +222,14 @@ class DetailContent extends StatelessWidget {
                                       },
                                       itemCount: recommendations.length,
                                     ),
+                                  );
+                                } else if (state is SeriesRecommendationEmpty) {
+                                  return Text(
+                                    state.message
+                                  );
+                                } else if (state is SeriesRecommendationError) {
+                                  return Text(
+                                    state.message
                                   );
                                 } else {
                                   return Container();
@@ -279,7 +263,7 @@ class DetailContent extends StatelessWidget {
             backgroundColor: kRichBlack,
             foregroundColor: Colors.white,
             child: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.pop(context);
               },
