@@ -1,11 +1,11 @@
+import 'package:core/domain/entities/series.dart';
+import 'package:core/domain/entities/series_detail.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:series/domain/entities/series.dart';
-import 'package:series/domain/entities/series_detail.dart';
-import 'package:series/domain/usecases/get_watchlist_series.dart';
-import 'package:series/domain/usecases/get_watchlist_status_series.dart';
-import 'package:series/domain/usecases/remove_watchlist_series.dart';
-import 'package:series/domain/usecases/save_watchlist_series.dart';
+import 'package:core/domain/usecases/get_watchlist_series.dart';
+import 'package:core/domain/usecases/get_watchlist_status_series.dart';
+import 'package:core/domain/usecases/remove_watchlist_series.dart';
+import 'package:core/domain/usecases/save_watchlist_series.dart';
 
 part 'watchlist_series_event.dart';
 part 'watchlist_series_state.dart';

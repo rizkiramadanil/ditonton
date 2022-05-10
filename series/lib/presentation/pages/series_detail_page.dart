@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/domain/entities/genre.dart';
+import 'package:core/domain/entities/series.dart';
+import 'package:core/domain/entities/series_detail.dart';
 import 'package:core/styles/colors.dart';
 import 'package:core/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:series/domain/entities/series.dart';
-import 'package:series/domain/entities/series_detail.dart';
 import 'package:series/presentation/bloc/series_detail/series_detail_bloc.dart';
 import 'package:series/presentation/bloc/series_recommendation/series_recommendation_bloc.dart';
 import 'package:series/presentation/bloc/watchlist_series/watchlist_series_bloc.dart';

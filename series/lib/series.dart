@@ -1,24 +1,5 @@
 library series;
 
-export 'data/datasources/db/series_database_helper.dart';
-export 'data/datasources/series_local_data_source.dart';
-export 'data/models/series_detail_model.dart';
-export 'data/models/series_model.dart';
-export 'data/models/series_response.dart';
-export 'data/models/series_table.dart';
-export 'data/repositories/series_repository_impl.dart';
-export 'domain/entities/series.dart';
-export 'domain/entities/series_detail.dart';
-export 'domain/repositories/series_repository.dart';
-export 'domain/usecases/get_on_the_air_series.dart';
-export 'domain/usecases/get_popular_series.dart';
-export 'domain/usecases/get_series_detail.dart';
-export 'domain/usecases/get_series_recommendations.dart';
-export 'domain/usecases/get_top_rated_series.dart';
-export 'domain/usecases/get_watchlist_series.dart';
-export 'domain/usecases/get_watchlist_status_series.dart';
-export 'domain/usecases/remove_watchlist_series.dart';
-export 'domain/usecases/save_watchlist_series.dart';
 export 'presentation/bloc/on_the_air_series/on_the_air_series_bloc.dart';
 export 'presentation/bloc/popular_series/popular_series_bloc.dart';
 export 'presentation/bloc/series_detail/series_detail_bloc.dart';

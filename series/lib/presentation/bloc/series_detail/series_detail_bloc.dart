@@ -1,7 +1,7 @@
+import 'package:core/domain/entities/series_detail.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:series/domain/entities/series_detail.dart';
-import 'package:series/domain/usecases/get_series_detail.dart';
+import 'package:core/domain/usecases/get_series_detail.dart';
 
 part 'series_detail_event.dart';
 part 'series_detail_state.dart';

@@ -1,5 +1,6 @@
 import 'package:about/about.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:core/domain/entities/series.dart';
 import 'package:core/styles/text_styles.dart';
 import 'package:core/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie/presentation/pages/home_movie_page.dart';
 import 'package:movie/presentation/pages/watchlist_movies_page.dart';
 import 'package:search/search.dart';
-import 'package:series/domain/entities/series.dart';
 import 'package:series/presentation/bloc/on_the_air_series/on_the_air_series_bloc.dart';
 import 'package:series/presentation/bloc/popular_series/popular_series_bloc.dart';
 import 'package:series/presentation/bloc/top_rated_series/top_rated_series_bloc.dart';

@@ -2,16 +2,16 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:core/data/models/movie_detail_model.dart';
+import 'package:core/data/models/movie_model.dart';
+import 'package:core/data/models/movie_response.dart';
+import 'package:core/data/models/series_detail_model.dart';
+import 'package:core/data/models/series_model.dart';
+import 'package:core/data/models/series_response.dart';
 import 'package:core/utils/exception.dart';
 import 'package:flutter/services.dart';
 import 'package:http/io_client.dart';
 import 'package:http/http.dart' as http;
-import 'package:movie/data/models/movie_detail_model.dart';
-import 'package:movie/data/models/movie_model.dart';
-import 'package:movie/data/models/movie_response.dart';
-import 'package:series/data/models/series_detail_model.dart';
-import 'package:series/data/models/series_model.dart';
-import 'package:series/data/models/series_response.dart';
 
 abstract class RemoteDataSource {
   Future<List<MovieModel>> getNowPlayingMovies();

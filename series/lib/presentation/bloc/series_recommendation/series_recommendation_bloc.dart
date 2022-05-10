@@ -1,7 +1,7 @@
+import 'package:core/domain/entities/series.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:series/domain/entities/series.dart';
-import 'package:series/domain/usecases/get_series_recommendations.dart';
+import 'package:core/domain/usecases/get_series_recommendations.dart';
 
 part 'series_recommendation_event.dart';
 part 'series_recommendation_state.dart';
