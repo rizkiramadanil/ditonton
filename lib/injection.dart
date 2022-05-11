@@ -1,5 +1,6 @@
 import 'package:core/data/datasources/db/movie_database_helper.dart';
 import 'package:core/data/datasources/db/series_database_helper.dart';
+import 'package:core/data/datasources/http_ssl_pinning.dart';
 import 'package:core/data/datasources/movie_local_data_source.dart';
 import 'package:core/data/datasources/remote_data_source.dart';
 import 'package:core/data/datasources/series_local_data_source.dart';
@@ -27,7 +28,6 @@ import 'package:core/domain/usecases/save_watchlist_movies.dart';
 import 'package:core/domain/usecases/save_watchlist_series.dart';
 import 'package:core/domain/usecases/search_movies.dart';
 import 'package:core/domain/usecases/search_series.dart';
-import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
 import 'package:movie/presentation/bloc/movie_detail/movie_detail_bloc.dart';
 import 'package:movie/presentation/bloc/movie_recommendation/movie_recommendation_bloc.dart';
@@ -155,5 +155,5 @@ void init() {
   locator.registerLazySingleton<SeriesDatabaseHelper>(() => SeriesDatabaseHelper());
 
   // external
-  locator.registerLazySingleton(() => http.Client());
+  locator.registerLazySingleton(() => HttpSSLPinning.client);
 }

@@ -3,6 +3,7 @@ library core;
 export 'common/encrypt.dart';
 export 'data/datasources/db/movie_database_helper.dart';
 export 'data/datasources/db/series_database_helper.dart';
+export 'data/datasources/http_ssl_pinning.dart';
 export 'data/datasources/movie_local_data_source.dart';
 export 'data/datasources/series_local_data_source.dart';
 export 'data/datasources/remote_data_source.dart';

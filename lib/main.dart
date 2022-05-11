@@ -1,4 +1,5 @@
 import 'package:about/about_page.dart';
+import 'package:core/data/datasources/http_ssl_pinning.dart';
 import 'package:core/styles/colors.dart';
 import 'package:core/styles/text_styles.dart';
 import 'package:core/utils/utils.dart';
@@ -39,6 +40,7 @@ import 'package:series/presentation/pages/watchlist_series_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await HttpSSLPinning.init();
   di.init();
   runApp(MyApp());
 }
