@@ -119,7 +119,10 @@ class _HomeSeriesPageState extends State<HomeSeriesPage> {
                   } else if (state is OnTheAirSeriesLoaded) {
                     return SeriesList(state.result);
                   } else if (state is OnTheAirSeriesError) {
-                    return Text(state.message);
+                    return Text(
+                      state.message,
+                      key: const Key('error_message'),
+                    );
                   } else {
                     return const Text('Failed');
                   }
@@ -139,7 +142,10 @@ class _HomeSeriesPageState extends State<HomeSeriesPage> {
                   } else if (state is PopularSeriesLoaded) {
                     return SeriesList(state.result);
                   } else if (state is PopularSeriesError) {
-                    return Text(state.message);
+                    return Text(
+                      state.message,
+                      key: const Key('error_message'),
+                    );
                   } else {
                     return const Text('Failed');
                   }
@@ -159,7 +165,10 @@ class _HomeSeriesPageState extends State<HomeSeriesPage> {
                   } else if (state is TopRatedSeriesLoaded) {
                     return SeriesList(state.result);
                   } else if (state is TopRatedSeriesError) {
-                    return Text(state.message);
+                    return Text(
+                      state.message,
+                      key: const Key('error_message'),
+                    );
                   } else {
                     return const Text('Failed');
                   }

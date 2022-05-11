@@ -1,0 +1,28 @@
+{
+  "page": 1,
+  "results": [
+    {
+      "adult": false,
+      "backdrop_path": "/path.jpg",
+      "genre_ids": [
+        1,
+        2
+      ],
+      "id": 1,
+      "media_type": "Media Type",
+      "name": "Name",
+      "origin_country": [
+        "Origin Country"
+      ],
+      "original_language": "Original Language",
+      "original_name": "Original Name",
+      "overview": "Overview",
+      "popularity": 1,
+      "poster_path": "/path.jpg",
+      "vote_average": 1.0,
+      "vote_count": 1
+    }
+  ],
+  "total_pages": 2,
+  "total_results": 27
+}

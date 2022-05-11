@@ -119,7 +119,10 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
                   } else if (state is NowPlayingMoviesLoaded) {
                     return MovieList(state.result);
                   } else if (state is NowPlayingMoviesError) {
-                    return Text(state.message);
+                    return Text(
+                      state.message,
+                        key: const Key('error_message'),
+                    );
                   } else {
                     return const Text('Failed');
                   }
@@ -139,7 +142,10 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
                   } else if (state is PopularMoviesLoaded) {
                     return MovieList(state.result);
                   } else if (state is PopularMoviesError) {
-                    return Text(state.message);
+                    return Text(
+                      state.message,
+                      key: const Key('error_message'),
+                    );
                   } else {
                     return const Text('Failed');
                   }
@@ -159,7 +165,10 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
                   } else if (state is TopRatedMoviesLoaded) {
                     return MovieList(state.result);
                   } else if (state is TopRatedMoviesError) {
-                    return Text(state.message);
+                    return Text(
+                      state.message,
+                      key: const Key('error_message'),
+                    );
                   } else {
                     return const Text('Failed');
                   }
